@@ -1,4 +1,4 @@
 # boostcamp-online-api-2025
 
-** npm install **
-** change database uri **
+1. npm install
+2. change database uri
