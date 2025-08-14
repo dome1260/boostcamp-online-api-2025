@@ -5,9 +5,16 @@ const userService = require('../services/users.service')
 const userController = {
   async getAllUsers (req, res) {
     try {
-      const users = await userService.getAll({
-        status: 'ACTIVE'
-      })
+      const options = {
+        page: Number(req.query.page) || 1,
+        limit: Number(req.query.limit) || 10,
+        sort: { createdAt: -1}
+      }
+
+      const users = await userService.getPaginate({
+        status: { $ne: 'DELETED' }
+      }, options)
+
       return res.status(200).json({
         message: 'success',
         data: users
@@ -27,10 +34,12 @@ const userController = {
         !req.body.firstName
         || !req.body.lastName
         || !req.body.email
+        || !req.body.username
+        || !req.body.password
       ) {
         return res.status(400).json({
           success: false,
-          message: 'First name, Last name and Email is required'
+          message: 'Please fill in all required fields'
         })
       }
 

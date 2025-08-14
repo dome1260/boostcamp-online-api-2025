@@ -1,6 +1,10 @@
 const userModel = require('../models/users.model')
 
 const userService = {
+  getPaginate (query, options) {
+    return userModel.paginate(query, options)
+  },
+
   getAll (query) {
     return userModel.find(query)
   },

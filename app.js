@@ -19,7 +19,7 @@ app.use('/users', userRoute)
 app.use('/upload', uploadRoute)
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Server')
+  res.send('Welcome to Server !!!')
 })
 
 app.listen(port, () => {
