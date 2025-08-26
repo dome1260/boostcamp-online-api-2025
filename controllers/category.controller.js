@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
-const tagService = require('../services/tag.service')
+const categoryService = require('../services/category.service')
 
-const tagController = {
-  async getTagByPaginate (req, res) {
+const categoryController = {
+  async getCategoryByPaginate (req, res) {
     try {
       const options = {
         page: Number(req.query.page) || 1,
@@ -10,16 +10,16 @@ const tagController = {
         sort: { createdAt: -1}
       }
 
-      const tags = await tagService.getPaginate({
+      const categories = await categoryService.getPaginate({
         status: { $ne: 'DELETED' }
       }, options)
 
       return res.status(200).json({
         message: 'success',
-        data: tags
+        data: categories
       })
     } catch (error) {
-      console.error('[ERROR] get tag by paginate', error?.message || error)
+      console.error('[ERROR] get category by paginate', error?.message || error)
       return res.status(500).json({
         success: false,
         message: error?.message || error
@@ -27,28 +27,28 @@ const tagController = {
     }
   },
 
-  async getTagById (req, res) {
+  async getCategoryById (req, res) {
     try {
       const objectId = new mongoose.Types.ObjectId(`${req.params.id}`)
 
-      const tag = await tagService.getOne({
+      const category = await categoryService.getOne({
         _id: objectId,
         status: { $ne: 'DELETED' }
       })
 
-      if (!tag) {
+      if (!category) {
         return res.status(404).json({
           success: false,
-          message: 'Tag not found'
+          message: 'Category not found'
         })
       }
 
       return res.status(200).json({
         message: 'success',
-        data: tag
+        data: category
       })
     } catch (error) {
-      console.error('[ERROR] get tag by id', error?.message || error)
+      console.error('[ERROR] get category by id', error?.message || error)
       return res.status(500).json({
         success: false,
         message: error?.message || error
@@ -56,7 +56,7 @@ const tagController = {
     }
   },
 
-  async createTag (req, res) {
+  async createCategory (req, res) {
     try {
       if ( !req.body.name) {
         return res.status(400).json({
@@ -65,24 +65,24 @@ const tagController = {
         })
       }
 
-      const duplicateName = await tagService.getOne({
+      const duplicateName = await categoryService.getOne({
         name: req.body.name,
         status: { $ne: 'DELETED' }
       })
       if (duplicateName) {
         return res.status(400).json({
           success: false,
-          message: "Tag already exists"
+          message: "Category already exists"
         })
       }
 
-      const created = await tagService.create(req.body)
+      const created = await categoryService.create(req.body)
       return res.status(201).json({
         message: 'success',
         data: created
       })
     } catch (error) {
-      console.error('[ERROR] create tag', error?.message || error)
+      console.error('[ERROR] create category', error?.message || error)
       return res.status(500).json({
         success: false,
         message: error?.message || error
@@ -90,21 +90,21 @@ const tagController = {
     }
   },
 
-  async updateTag (req, res) {
+  async updateCategory (req, res) {
     try {
       const objectId = new mongoose.Types.ObjectId(`${req.params.id}`)
-      const tag = await tagService.getById(objectId, {
+      const category = await categoryService.getById(objectId, {
         status: 'ACTIVE'
       })
 
-      if (!tag) {
+      if (!category) {
         return res.status(404).json({
           success: false,
-          message: 'Tag not found'
+          message: 'Category not found'
         })
       }
 
-      const updated = await tagService.updateById(
+      const updated = await categoryService.updateById(
         objectId,
         {
           status: 'ACTIVE'
@@ -117,7 +117,7 @@ const tagController = {
         data: updated
       })
     } catch (error) {
-      console.error('[ERROR] update tag', error?.message || error)
+      console.error('[ERROR] update category', error?.message || error)
       return res.status(500).json({
         success: false,
         message: error?.message || error
@@ -125,21 +125,21 @@ const tagController = {
     }
   },
 
-  async deleteTag (req, res) {
+  async deleteCategory (req, res) {
     try {
       const objectId = new mongoose.Types.ObjectId(`${req.params.id}`)
-      const tag = await tagService.getById(objectId, {
+      const category = await categoryService.getById(objectId, {
         status: 'ACTIVE'
       })
 
-      if (!tag) {
+      if (!category) {
         return res.status(404).json({
           success: false,
-          message: 'Tag not found'
+          message: 'Category not found'
         })
       }
 
-      const deleted = await tagService.deleteById(
+      const deleted = await categoryService.deleteById(
         objectId,
         {
           status: 'ACTIVE'
@@ -151,7 +151,7 @@ const tagController = {
         data: deleted
       })
     } catch (error) {
-      console.error('[ERROR] delete tag', error?.message || error)
+      console.error('[ERROR] delete category', error?.message || error)
       return res.status(500).json({
         success: false,
         message: error?.message || error
@@ -160,4 +160,4 @@ const tagController = {
   }
 }
 
-module.exports = tagController
+module.exports = categoryController
