@@ -67,12 +67,12 @@ const orderController = {
         })
       }
       
-      const duplicateOrderNo = await orderService.getOne({
+      const duplicateOrder = await orderService.getOne({
         orderNo,
         status: { $ne: 'DELETED' }
       })
 
-      if (duplicateOrderNo) {
+      if (duplicateOrder) {
         return res.status(400).json({
           success: false,
           message: 'Order already exists'
@@ -168,7 +168,40 @@ const orderController = {
         message: error?.message || error
       })
     }
-  }
+  },
+
+  async updateOrderStatus(req, res) {
+    try {
+      const objectId = new mongoose.Types.ObjectId(`${req.params.id}`)
+      const order = await orderService.getById(objectId, { status: { $ne: 'DELETED' } })
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        })
+      }
+
+      const updated = await orderService.updateById(
+        objectId,
+        { status: { $ne: 'DELETED' } },
+        { 
+          status: req.body.status
+        }
+      )
+
+      return res.status(200).json({
+        message: 'success',
+        data: updated
+      })
+    } catch (error) {
+      console.error('[ERROR] update order status', error?.message || error)
+      return res.status(500).json({
+        success: false,
+        message: error?.message || error
+      })
+    }
+  },
 }
 
 module.exports = orderController
