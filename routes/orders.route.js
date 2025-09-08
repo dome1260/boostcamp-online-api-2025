@@ -9,5 +9,6 @@ router.get('/:id', adminGuard, orderController.getOrderById)
 router.post('/', adminGuard, orderController.createOrder)
 router.put('/:id', adminGuard, orderController.updateOrder)
 router.delete('/:id', adminGuard, orderController.deleteOrder)
+router.patch('/:id/order-status', adminGuard, orderController.updateOrderStatus)
 
 module.exports = router
